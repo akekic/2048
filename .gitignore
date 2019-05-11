@@ -1,0 +1,55 @@
+###################################
+# general ignore patterns
+###################################
+
+# build/
+# obj/
+# *.o
+# Debug*/
+# Release*/
+# *.mode*
+# *.app/
+# *.pyc
+# .svn/
+cache/
+__pycache__
+
+###################################
+# IDE specific
+###################################
+
+# Pycharm
+.idea/
+
+###################################
+# OS Specific
+###################################
+
+# Linux
+*~
+# KDE
+.directory
+
+# OSX
+**/.DS_Store
+.DS_Store
+*.swp
+*~.nib
+# Thumbnails
+._*
+
+###################################
+# LaTeX
+###################################
+*.aux
+*.fls
+*fdb_latexmk
+*.log
+*.out
+*.pdf
+*.gz
+*.toc
+
+###################################
+# official gitignore repo:
+# http://github.com/github/gitignore
