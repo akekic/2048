@@ -2,10 +2,10 @@ import numpy as np
 
 from gym import Env
 
-from game2048.variable_names import UP, RIGHT, DOWN, LEFT
+from gym_2048.envs.variable_names import UP, RIGHT, DOWN, LEFT
 
 
-class GymEnv2048(Env):
+class Gym2048Env(Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self, N=4, verbose=False):

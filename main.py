@@ -1,8 +1,8 @@
-from game2048 import GymEnv2048
+from gym_2048.envs import Gym2048Env
 
 
 def main():
-    g = GymEnv2048(verbose=True)  # initialize board
+    g = Gym2048Env(verbose=True)  # initialize board
     g.step(0)
     g.step(1)
     g.step(2)
