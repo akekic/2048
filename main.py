@@ -1,17 +1,16 @@
-from game2048 import Game, GameSimulator
+from game2048 import Game, GameSimulator, GymEnv2048
 
 
 def main():
-    g = Game()  # initialize board
+    g = GymEnv2048(verbose=True)  # initialize board
     print(g)  # print board and score
-    g.move_right()
-    g.move_up()
-    g.move_down()
-    g.move_left()
-    # g._random_moves(100000)
+    g.step(0)
+    g.step(1)
+    g.step(2)
+    g.step(3)
 
 
 main()
-sim = GameSimulator(n_runs=10)
-sim.simulate_strategy(strategy='swirl')
-sim.summary()
+# sim = GameSimulator(n_runs=10)
+# sim.simulate_strategy(strategy='swirl')
+# sim.summary()
