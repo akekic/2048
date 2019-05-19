@@ -78,13 +78,12 @@ class Gym2048Env(Env):
             reward = 0
         else:
             reward = self.calculate_reward(self.board, new_board)
+            self.board = new_board
             self._pop_up_number()
-        self.board = new_board
 
         # game over check
         done = self.game_over_check()
         observation = self.board
-        reward = self.calculate_reward()
         info = None
 
         # verbose output
