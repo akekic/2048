@@ -73,15 +73,18 @@ class Gym2048Env(Env):
 
         # pop up new number
         if np.all(new_board == self.board):
-            print('Move did not change the board, no new number popped up.')
+            if self.verbose:
+                print('Move did not change the board, no new number popped up.')
+            reward = 0
         else:
-            self.board = new_board
+            reward = self.calculate_reward(self.board, new_board)
             self._pop_up_number()
+        self.board = new_board
 
         # game over check
         done = self.game_over_check()
         observation = self.board
-        reward = self.calculate_score()
+        reward = self.calculate_reward()
         info = None
 
         # verbose output
@@ -136,8 +139,35 @@ class Gym2048Env(Env):
         diffs = np.ediff1d(a)
         return np.concatenate([a[a == 0], a[a != 0]])
 
-    def calculate_score(self):
-        self.score = self.board.sum()  # TODO: change to actual way to score
+    @staticmethod
+    def calculate_reward(old_board, new_board):
+        # count unique values in old and new board
+        old_val, old_cts = np.unique(old_board, return_counts=True)
+        old_value_counts = dict(zip(old_val, old_cts))
+
+        new_val, new_cts = np.unique(new_board, return_counts=True)
+        new_value_counts = dict(zip(new_val, new_cts))
+
+        # extend value count dicts by values from other board
+        for k_new in new_value_counts.keys():
+            if k_new not in old_value_counts:
+                old_value_counts[k_new] = 0
+
+        for k_old in old_value_counts.keys():
+            if k_old not in new_value_counts:
+                new_value_counts[k_old] = 0
+
+        reward = 0
+        for val in reversed(np.sort(new_val)):
+            if old_value_counts[val] < new_value_counts[val]:
+                # count how often val is not yet accounted for
+                n_diff = new_value_counts[val] - old_value_counts[val]
+                reward += val * (n_diff)
+
+                # account for fields that had to be merged
+                new_value_counts[val / 2] += 2 * n_diff
+
+        return reward
 
     def game_over_check(self):
         if np.any(self.board == 0):
