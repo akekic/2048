@@ -7,6 +7,7 @@ from gym_2048.envs.variable_names import UP, RIGHT, DOWN, LEFT
 
 class Gym2048Env(Env):
     metadata = {'render.modes': ['human']}
+    action_space = [UP, RIGHT, DOWN, LEFT]
 
     def __init__(self, N=4, verbose=False):
         self.N = N
@@ -32,6 +33,32 @@ class Gym2048Env(Env):
         if self.verbose:
             print(f"Move {action}")
         new_board = np.copy(self.board)
+        new_board = self.slide_and_merge(new_board, action)
+
+        # pop up new number
+        if np.all(new_board == self.board):
+            if self.verbose:
+                print('Move did not change the board, no new number popped up.')
+            reward = 0
+        else:
+            reward = self.calculate_reward(self.board, new_board)
+            self.board = new_board
+            self._pop_up_number()
+
+        # game over check
+        done = self.game_over_check()
+        observation = self.board
+        info = None
+
+        # verbose output
+        if self.verbose:
+            print(self.board)
+            if self.is_game_over:
+                print(f"Game over! Score: {self.score}")
+
+        return observation, reward, done, info
+
+    def slide_and_merge(self, new_board, action):
         if action == UP:
             new_board = np.apply_along_axis(self._move_array_up, 0, new_board)
             # merge same neighbors
@@ -70,29 +97,7 @@ class Gym2048Env(Env):
             new_board = np.apply_along_axis(self._move_array_left, 1, new_board)
         else:
             raise ValueError(f"Illegal action {action} selected. Options: {UP}, {RIGHT}, {DOWN}, {LEFT}.")
-
-        # pop up new number
-        if np.all(new_board == self.board):
-            if self.verbose:
-                print('Move did not change the board, no new number popped up.')
-            reward = 0
-        else:
-            reward = self.calculate_reward(self.board, new_board)
-            self.board = new_board
-            self._pop_up_number()
-
-        # game over check
-        done = self.game_over_check()
-        observation = self.board
-        info = None
-
-        # verbose output
-        if self.verbose:
-            print(self.board)
-            if self.is_game_over:
-                print(f"Game over! Score: {self.score}")
-
-        return observation, reward, done, info
+        return new_board
 
     def reset(self):
         """Resets the state of the environment and returns an initial observation.
@@ -176,3 +181,23 @@ class Gym2048Env(Env):
         else:
             self.is_game_over = True
         return self.is_game_over
+
+    def next_states(self, action):
+        """
+        Returns possible next states if action was taken. All states have equal probability.
+        """
+        current_board = np.copy(self.board)
+        board_after_merge = self.slide_and_merge(current_board, action)
+        if np.all(current_board == board_after_merge):
+            info = {'useless_action': True}
+            return [current_board], info
+        free_indices = np.argwhere(board_after_merge == 0)
+
+        pop_up_number = 2  # TODO: replace this by random choice between 2 and 4
+        next_states = []
+        for index in free_indices:
+            next_board = np.copy(board_after_merge)
+            next_board[index] = pop_up_number
+            next_states.append(next_board)
+        info = {'useless_action': False}
+        return next_states, info
