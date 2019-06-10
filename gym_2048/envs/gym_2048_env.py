@@ -201,3 +201,12 @@ class Gym2048Env(Env):
             next_states.append(next_board)
         info = {'useless_action': False}
         return next_states, info
+
+    def action_reward(self, action):
+        """
+        Returns the reward after taking an action.
+        """
+        current_board = np.copy(self.board)
+        board_after_merge = self.slide_and_merge(current_board, action)
+        reward = self.calculate_reward(current_board, board_after_merge)
+        return reward
