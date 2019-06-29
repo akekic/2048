@@ -1,6 +1,6 @@
 import pytest
 
-from gym_2048.envs.gym_2048_env import Gym2048Env
+from gym_env_2048.envs.env import Gym2048Env
 
 board1 = [
     [0, 0, 0, 0],

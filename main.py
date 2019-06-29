@@ -1,4 +1,4 @@
-from gym_2048.envs import Gym2048Env
+from gym_env_2048.envs import Gym2048Env
 
 
 def main():

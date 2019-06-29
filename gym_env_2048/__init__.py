@@ -6,6 +6,6 @@ logger = logging.getLogger(__name__)
 
 register(
     id='Gym2048-v0',
-    entry_point='gym_2048.envs:Gym2048Env',
+    entry_point='gym_env_2048.envs:Gym2048Env',
     nondeterministic=True,
 )

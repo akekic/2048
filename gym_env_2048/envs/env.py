@@ -2,7 +2,7 @@ import numpy as np
 
 from gym import Env
 
-from gym_2048.envs.variable_names import UP, RIGHT, DOWN, LEFT
+from gym_env_2048.envs.variable_names import UP, RIGHT, DOWN, LEFT
 
 
 class Gym2048Env(Env):
