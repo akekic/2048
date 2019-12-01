@@ -53,7 +53,7 @@ class Gym2048Env(Env):
         # verbose output
         if self.verbose:
             print(self.board)
-            if self.is_game_over:
+            if self.done:
                 print(f"Game over! Score: {self.score}")
 
         return observation, reward, done, info
@@ -109,7 +109,7 @@ class Gym2048Env(Env):
         self._pop_up_number()
         self._pop_up_number()
         self.score = 0
-        self.is_game_over = False
+        self.done = False
 
         return self.board
 
@@ -175,12 +175,12 @@ class Gym2048Env(Env):
 
     def game_over_check(self):
         if np.any(self.board == 0):
-            self.is_game_over = False
+            self.done = False
         elif np.any(np.diff(self.board, n=1, axis=0) == 0) or np.any(np.diff(self.board, n=1, axis=1) == 0):
-            self.is_game_over = False
+            self.done = False
         else:
-            self.is_game_over = True
-        return self.is_game_over
+            self.done = True
+        return self.done
 
     def next_states(self, action):
         """
